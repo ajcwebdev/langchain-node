@@ -45,12 +45,26 @@ curl \
 
 ### Deploy to Railway
 
+Install `flyctl` on MacOS and login to your account:
+
 ```bash
+brew install railway
 railway login
+```
+
+Initialize project and build Docker image:
+
+```bash
 railway init -n langchain-template-node-railway
 railway link
 railway up
 ```
+
+Add API key to your project's environment variables.
+
+<p align="center">
+  <img width="800" alt="railway environment variables in the dashboard" src="https://user-images.githubusercontent.com/12433465/234241902-a6b08a86-382a-446d-a161-35c5ce16da6c.png">
+</p>
 
 ```bash
 curl \
@@ -58,6 +72,10 @@ curl \
   -d '{"input": "hi there"}' \
   'https://langchain-template-node-railway-production.up.railway.app/chat'
 ```
+
+<p align="center">
+  <img width="800" alt="railway logs with chatgpt output" src="https://user-images.githubusercontent.com/12433465/234242009-39aca511-02c9-4771-8e0d-b634a8d75a78.png">
+</p>
 
 ### Deploy to Fly
 
@@ -81,7 +99,10 @@ Check application state:
 ```bash
 fly logs -a langchain-template-node-railway
 fly status -a langchain-template-node-railway
-curl -H 'Content-Type: application/json' -d '{"input": "hi there"}' 'https://langchain-template-node-railway.fly.dev/chat'
+curl \
+  -H 'Content-Type: application/json' \
+  -d '{"input": "hi there"}' \
+  'https://langchain-template-node-railway.fly.dev/chat'
 ```
 
 ## Code
