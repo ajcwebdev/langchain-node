@@ -52,6 +52,13 @@ railway link
 railway up
 ```
 
+```bash
+curl \
+  -H 'Content-Type: application/json' \
+  -d '{"input": "hi there"}' \
+  'https://langchain-template-node-railway-production.up.railway.app/chat'
+```
+
 ### Deploy to Fly
 
 Install `flyctl` on MacOS and login to your account:
