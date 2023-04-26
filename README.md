@@ -45,10 +45,9 @@ curl \
 
 ### Deploy to Railway
 
-Install `flyctl` on MacOS and login to your account:
+Install the [`railway` CLI](https://docs.railway.app/develop/cli) and login to your account:
 
 ```bash
-brew install railway
 railway login
 ```
 
@@ -79,10 +78,9 @@ curl \
 
 ### Deploy to Fly
 
-Install `flyctl` on MacOS and login to your account:
+Install the [`flyctl` CLI](https://fly.io/docs/hands-on/install-flyctl/) and login to your account:
 
 ```bash
-brew install flyctl
 fly auth login
 ```
 
@@ -91,18 +89,18 @@ Launch and deploy application:
 ```bash
 fly launch --now \
   -e OPENAI_API_KEY=YOUR_KEY_HERE \
-  --name langchain-template-node-railway
+  --name langchain-template-node-fly
 ```
 
 Check application state:
 
 ```bash
-fly logs -a langchain-template-node-railway
-fly status -a langchain-template-node-railway
+fly logs -a langchain-template-node-fly
+fly status -a langchain-template-node-fly
 curl \
   -H 'Content-Type: application/json' \
   -d '{"input": "hi there"}' \
-  'https://langchain-template-node-railway.fly.dev/chat'
+  'https://langchain-template-node-fly.fly.dev/chat'
 ```
 
 ## Code
