@@ -4,6 +4,7 @@
 
 - [Local Development](#local-development)
 - [Deployment](#deployment)
+  - [Deploy to Edgio](#deploy-to-edgio)
   - [Deploy to Railway](#deploy-to-railway)
   - [Deploy to Fly](#deploy-to-fly)
 - [Code](#code)
@@ -42,6 +43,27 @@ curl \
 ```
 
 ## Deployment
+
+### Deploy to Edgio
+
+Install the [Edgio CLI](https://docs.edg.io/guides/develop/cli) and login to your account:
+
+```bash
+edgio login
+```
+
+Initialize project and build the project:
+
+```bash
+npm install && edg build
+```
+
+Deploy with the command:
+
+```bash
+edg deploy --site=my-open-api-project-on-edgio
+```
+
 
 ### Deploy to Railway
 

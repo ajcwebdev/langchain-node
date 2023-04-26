@@ -4,9 +4,20 @@
   "type": "module",
   "author": "Anthony Campolo",
   "license": "MIT",
+  "scripts": {
+    "edgio:build": "edgio build"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "langchain": "^0.0.64",
     "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "@edgio/cli": "^6.1.4",
+    "@edgio/core": "^6.1.4",
+    "@edgio/devtools": "^6.1.4",
+    "@edgio/prefetch": "^6.1.4",
+    "@vercel/nft": "^0.22.6",
+    "dotenv": "^16.0.3"
   }
 }
