@@ -1,9 +1,9 @@
-import { Router } from "@edgio/core/router";
+import { Router } from '@edgio/core/router'
 
-const router = new Router();
+const router = new Router()
 
 router.fallback(({ renderWithApp }) => {
-  renderWithApp();
-});
+  renderWithApp()
+})
 
-export default router;
+export default router

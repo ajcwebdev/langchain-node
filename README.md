@@ -64,7 +64,6 @@ Deploy with the command:
 edg deploy --site=my-open-api-project-on-edgio
 ```
 
-
 ### Deploy to Railway
 
 Install the [`railway` CLI](https://docs.railway.app/develop/cli) and login to your account:
@@ -166,16 +165,16 @@ ENTRYPOINT [ "node", "src/index.mjs" ]
 ```js
 // src/index.mjs
 
-import express from "express"
-import { OpenAI } from "langchain/llms/openai"
-import { ConversationChain } from "langchain/chains"
+import express from 'express'
+import { OpenAI } from 'langchain/llms/openai'
+import { ConversationChain } from 'langchain/chains'
 
 const app = express()
 const port = process.env.PORT || 8080
 
 const model = new OpenAI({})
 
-app.post("/chat", express.json(), async (req, res) => {
+app.post('/chat', express.json(), async (req, res) => {
   const chain = new ConversationChain({ llm: model })
   const input = req.body.input
   const result = await chain.call({ input })
