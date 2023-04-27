@@ -1,5 +1,6 @@
 const { join } = require("path");
 const { existsSync } = require("fs");
+const { nodeFileTrace } = require("@vercel/nft");
 const { DeploymentBuilder } = require("@edgio/core/deploy");
 
 const appDir = process.cwd();
@@ -13,8 +14,8 @@ module.exports = async () => {
   if (existsSync(join(appDir, ".env.production"))) {
     builder.addJSAsset(join(appDir, ".env.production"));
   }
-  builder.addJSAsset(join(appDir, "src", "index.mjs"));
-  builder.addJSAsset(join(appDir, "node_modules"));
+  const { fileList } = await nodeFileTrace([join(appDir, "src", "index.mjs")]);
+  fileList.forEach((i) => builder.addJSAsset(join(appDir, i)));
   builder.writeFileSync(
     join(builder.jsDir, "__backends__", "package.json"),
     JSON.stringify({ type: "commonjs" })
