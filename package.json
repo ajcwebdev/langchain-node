@@ -1,23 +1,27 @@
 {
-  "name": "langchain-template-node-railway",
-  "description": "Template for Deploying a LangChain App to Railway and Fly with Node and Docker",
+  "name": "langchain-node-edgio",
+  "description": "Template for Deploying a LangChain App to Railway, Fly, and Edgio with Node and Docker",
   "type": "module",
   "author": "Anthony Campolo",
   "license": "MIT",
   "scripts": {
-    "edgio:build": "edgio build",
+    "edgio:dev": "edg dev",
+    "edgio:build": "edg build",
+    "edgio:deploy": "edg deploy",
+    "start": "node --watch src/index.mjs",
     "fmt": "prettier --write '**/*' --ignore-unknown"
   },
   "dependencies": {
     "express": "^4.18.2",
     "langchain": "^0.0.64",
+    "node-fetch": "^2.6.11",
     "openai": "^3.2.1"
   },
   "devDependencies": {
-    "@edgio/cli": "^6.1.4",
-    "@edgio/core": "^6.1.4",
-    "@edgio/devtools": "^6.1.4",
-    "@edgio/prefetch": "^6.1.4",
+    "@edgio/cli": "^6.1.8",
+    "@edgio/core": "^6.1.8",
+    "@edgio/devtools": "^6.1.8",
+    "@edgio/prefetch": "^6.1.8",
     "@vercel/nft": "^0.22.6",
     "dotenv": "^16.0.3",
     "prettier": "^2.8.8"

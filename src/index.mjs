@@ -1,3 +1,7 @@
+import fetch, { Headers, Request } from 'node-fetch'
+global.fetch = fetch
+global.Headers = Headers
+global.Request = Request
 import { join } from 'path'
 import express from 'express'
 import { existsSync } from 'fs'
@@ -20,11 +24,19 @@ if (env) {
 const model = new OpenAI({})
 
 app.post('/chat', express.json(), async (req, res) => {
-  const chain = new ConversationChain({ llm: model })
-  const input = req.body.input
-  const result = await chain.call({ input })
-  console.log(result.response)
-  res.send({ body: result.response })
+  try {
+    const chain = new ConversationChain({ llm: model })
+    const { response } = await chain.call({ input: req.body.input })
+
+    console.log('Input: ' + JSON.stringify(req.body.input))
+    console.log('Result:' + JSON.stringify(response))
+
+    res.send({ body: response })
+  } catch (error) {
+    console.error('Error message:', error.message)
+    console.error('Error stack:', error.stack)
+    res.status(500).send({ error: 'Internal Server Error' })
+  }
 })
 
-app.listen(port, () => console.log(`Listening on port ${port}`))
+app.listen(port, () => console.log(`Listening on port ${port}\n`))

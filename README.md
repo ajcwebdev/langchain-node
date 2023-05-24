@@ -3,6 +3,9 @@
 ## Outline
 
 - [Local Development](#local-development)
+  - [Set Environment Variables](#set-environment-variables)
+  - [Install Dependencies and Start Development Server](#install-dependencies-and-start-development-server)
+  - [Test Local Server](#test-local-server)
 - [Deployment](#deployment)
   - [Deploy to Edgio](#deploy-to-edgio)
   - [Deploy to Railway](#deploy-to-railway)
@@ -13,33 +16,36 @@
 
 ## Local Development
 
+### Set Environment Variables
+
 Copy `.env.example` and include your API key in `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-Yarn:
+### Install Dependencies and Start Development Server
 
 ```bash
-yarn
-node src/index.mjs
+npm i
+node --watch src/index.mjs
 ```
 
-pnpm:
+### Test Local Server
 
 ```bash
-pnpm i
-node src/index.mjs
-```
-
-Test local server:
-
-```bash
-curl \
+curl "http://localhost:3001/chat" \
   -H 'Content-Type: application/json' \
-  -d '{"input": "hi there"}' \
-  'http://localhost:8080/chat'
+  -d '{"input":"Hi there"}'
+```
+
+Terminal output:
+
+```
+Listening on port 3001
+
+Input: "Hi there"
+Result:" Hi there! How are you doing today?"
 ```
 
 ## Deployment
@@ -49,19 +55,42 @@ curl \
 Install the [Edgio CLI](https://docs.edg.io/guides/develop/cli) and login to your account:
 
 ```bash
-edgio login
+npx edg login
 ```
 
 Initialize project and build the project:
 
 ```bash
-npm install && edg build
+npm i
+npm run build
 ```
 
-Deploy with the command:
+Deploy to Edgio v6:
 
 ```bash
-edg deploy --site=my-open-api-project-on-edgio
+npx edg use 6
+npm run deploy
+# edg deploy --site=langchain-node-edgio
+```
+
+```bash
+curl "https://ajcwebdev-langchain-node-edgio-default.layer0-limelight.link/chat" \
+  -H 'Content-Type: application/json' \
+  -d '{"input": "What is the edge?"}'
+```
+
+Deploy to Edgio v7:
+
+```bash
+npx edg use latest
+npm run deploy
+# edg deploy --property langchain-node-edgio
+```
+
+```bash
+curl "https://anthony-campolo-langchain-node-edgio-default.edgio.link/chat" \
+  -H 'Content-Type: application/json' \
+  -d '{"input":"What is the edge?"}'
 ```
 
 ### Deploy to Railway
@@ -87,10 +116,9 @@ Add API key to your project's environment variables.
 </p>
 
 ```bash
-curl \
+curl "https://langchain-template-node-railway-production.up.railway.app/chat" \
   -H 'Content-Type: application/json' \
-  -d '{"input": "hi there"}' \
-  'https://langchain-template-node-railway-production.up.railway.app/chat'
+  -d '{"input": "hi there"}'
 ```
 
 <p align="center">
@@ -118,10 +146,9 @@ Check application state:
 ```bash
 fly logs -a langchain-template-node-fly
 fly status -a langchain-template-node-fly
-curl \
+curl "https://langchain-template-node-fly.fly.dev/chat" \
   -H 'Content-Type: application/json' \
-  -d '{"input": "hi there"}' \
-  'https://langchain-template-node-fly.fly.dev/chat'
+  -d '{"input": "hi there"}'
 ```
 
 ## Code
@@ -165,23 +192,46 @@ ENTRYPOINT [ "node", "src/index.mjs" ]
 ```js
 // src/index.mjs
 
+import fetch, { Headers, Request } from 'node-fetch'
+global.fetch = fetch
+global.Headers = Headers
+global.Request = Request
+import { join } from 'path'
 import express from 'express'
+import { existsSync } from 'fs'
+import * as dotenv from 'dotenv'
 import { OpenAI } from 'langchain/llms/openai'
 import { ConversationChain } from 'langchain/chains'
 
 const app = express()
-const port = process.env.PORT || 8080
+const appDir = process.cwd()
+const port = process.env.PORT || 3001
+
+const env = ['.env.production', '.env'].map((i) => join(appDir, i)).find(existsSync)
+
+if (env) {
+  dotenv.config({ path: env })
+} else {
+  dotenv.config()
+}
 
 const model = new OpenAI({})
 
 app.post('/chat', express.json(), async (req, res) => {
-  const chain = new ConversationChain({ llm: model })
-  const input = req.body.input
-  const result = await chain.call({ input })
-  console.log(result.response)
+  try {
+    const chain = new ConversationChain({ llm: model })
+    const { response } = await chain.call({ input: req.body.input })
 
-  res.send({ body: result.response })
+    console.log('Input: ' + JSON.stringify(req.body.input))
+    console.log('Result:' + JSON.stringify(response))
+
+    res.send({ body: response })
+  } catch (error) {
+    console.error('Error message:', error.message)
+    console.error('Error stack:', error.stack)
+    res.status(500).send({ error: 'Internal Server Error' })
+  }
 })
 
-app.listen(port, () => console.log(`Listening on port ${port}`))
+app.listen(port, () => console.log(`Listening on port ${port}\n`))
 ```
