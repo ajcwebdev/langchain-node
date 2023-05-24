@@ -1,6 +1,6 @@
 {
   "name": "langchain-node",
-  "description": "Template for Deploying a LangChain App to Edgio with Node and Docker",
+  "description": "Template for Deploying a LangChain Node App with Edgio",
   "type": "module",
   "author": "Anthony Campolo",
   "license": "MIT",
