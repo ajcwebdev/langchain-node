@@ -2,12 +2,15 @@ import fetch, { Headers, Request } from 'node-fetch'
 global.fetch = fetch
 global.Headers = Headers
 global.Request = Request
-import { join } from 'path'
 import express from 'express'
-import { existsSync } from 'fs'
 import * as dotenv from 'dotenv'
 import { OpenAI } from 'langchain/llms/openai'
 import { ConversationChain } from 'langchain/chains'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { existsSync } from 'fs'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 const appDir = process.cwd()
@@ -22,6 +25,10 @@ if (env) {
 }
 
 const model = new OpenAI({})
+
+app.get('/', (req, res) => {
+  res.sendFile(join(__dirname, '../index.html'))
+})
 
 app.post('/chat', express.json(), async (req, res) => {
   try {

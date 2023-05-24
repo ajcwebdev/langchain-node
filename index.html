@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <title>LangChain Node Template on Edgio</title>
+    <script>
+      window.onload = function() {
+        document.getElementById('chatForm').onsubmit = function(event) {
+          event.preventDefault()
+          const input = document.getElementById('chatInput').value
+          fetch('/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ input }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              const resultDiv = document.getElementById('result')
+              resultDiv.innerHTML = `<p>${data.body}</p>`
+            })
+            .catch(error => console.error('Error:', error))
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>LangChain Node Template on Edgio</h1>
+    <form id="chatForm">
+      <textarea id="chatInput" placeholder="Type your message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <div id="result"></div>
+  </body>
+</html>
