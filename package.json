@@ -4,9 +4,27 @@
   "type": "module",
   "author": "Anthony Campolo",
   "license": "MIT",
+  "scripts": {
+    "edgio:build": "edgio build",
+    "fmt": "prettier --write '**/*' --ignore-unknown"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "langchain": "^0.0.64",
     "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "@edgio/cli": "^6.1.4",
+    "@edgio/core": "^6.1.4",
+    "@edgio/devtools": "^6.1.4",
+    "@edgio/prefetch": "^6.1.4",
+    "@vercel/nft": "^0.22.6",
+    "dotenv": "^16.0.3",
+    "prettier": "^2.8.8"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 150
   }
 }

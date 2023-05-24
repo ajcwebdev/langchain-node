@@ -4,6 +4,7 @@
 
 - [Local Development](#local-development)
 - [Deployment](#deployment)
+  - [Deploy to Edgio](#deploy-to-edgio)
   - [Deploy to Railway](#deploy-to-railway)
   - [Deploy to Fly](#deploy-to-fly)
 - [Code](#code)
@@ -42,6 +43,26 @@ curl \
 ```
 
 ## Deployment
+
+### Deploy to Edgio
+
+Install the [Edgio CLI](https://docs.edg.io/guides/develop/cli) and login to your account:
+
+```bash
+edgio login
+```
+
+Initialize project and build the project:
+
+```bash
+npm install && edg build
+```
+
+Deploy with the command:
+
+```bash
+edg deploy --site=my-open-api-project-on-edgio
+```
 
 ### Deploy to Railway
 
@@ -144,16 +165,16 @@ ENTRYPOINT [ "node", "src/index.mjs" ]
 ```js
 // src/index.mjs
 
-import express from "express"
-import { OpenAI } from "langchain/llms/openai"
-import { ConversationChain } from "langchain/chains"
+import express from 'express'
+import { OpenAI } from 'langchain/llms/openai'
+import { ConversationChain } from 'langchain/chains'
 
 const app = express()
 const port = process.env.PORT || 8080
 
 const model = new OpenAI({})
 
-app.post("/chat", express.json(), async (req, res) => {
+app.post('/chat', express.json(), async (req, res) => {
   const chain = new ConversationChain({ llm: model })
   const input = req.body.input
   const result = await chain.call({ input })
