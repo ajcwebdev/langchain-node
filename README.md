@@ -1,4 +1,4 @@
-# Deploy LangChain App to Railway and Fly with Node and Docker
+# Deploy LangChain App to Edgio, Railway, and Fly with Node and Docker
 
 ## Outline
 
@@ -11,8 +11,9 @@
   - [Deploy to Railway](#deploy-to-railway)
   - [Deploy to Fly](#deploy-to-fly)
 - [Code](#code)
-  - [Dockerfile](#dockerfile)
+  - [HTML Frontend](#html-frontend)
   - [Server](#server)
+  - [Dockerfile](#dockerfile)
 
 ## Local Development
 
@@ -153,38 +154,44 @@ curl "https://langchain-template-node-fly.fly.dev/chat" \
 
 ## Code
 
-### Dockerfile
+### HTML Frontend
 
-```dockerfile
-# Dockerfile
+```html
+<!-- index.html -->
 
-FROM debian:bullseye as builder
-
-ARG NODE_VERSION=19.4.0
-ARG YARN_VERSION=3.4.1
-
-RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
-RUN curl https://get.volta.sh | bash
-ENV VOLTA_HOME /root/.volta
-ENV PATH /root/.volta/bin:$PATH
-RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION}
-
-RUN mkdir /app
-WORKDIR /app
-COPY . .
-RUN yarn
-
-FROM debian:bullseye
-LABEL fly_launch_runtime="nodejs"
-
-COPY --from=builder /root/.volta /root/.volta
-COPY --from=builder /app /app
-
-WORKDIR /app
-ENV NODE_ENV production
-ENV PATH /root/.volta/bin:$PATH
-
-ENTRYPOINT [ "node", "src/index.mjs" ]
+<html>
+  <head>
+    <title>LangChain Node Template on Edgio</title>
+    <meta name="description" content="An example LangChain application deployed on Edgio with Node">
+    <script>
+      window.onload = function() {
+        document.getElementById('chatForm').onsubmit = function(event) {
+          event.preventDefault()
+          const input = document.getElementById('chatInput').value
+          fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input })
+          })
+            .then(response => response.json())
+            .then(data => {
+              const resultDiv = document.getElementById('result')
+              resultDiv.innerHTML = `<p>${data.body}</p>`
+            })
+            .catch(error => console.error('Error:', error))
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>LangChain Node Template on Edgio</h1>
+    <form id="chatForm">
+      <textarea id="chatInput" placeholder="Type your message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <div id="result"></div>
+  </body>
+</html>
 ```
 
 ### Server
@@ -234,4 +241,38 @@ app.post('/chat', express.json(), async (req, res) => {
 })
 
 app.listen(port, () => console.log(`Listening on port ${port}\n`))
+```
+
+### Dockerfile
+
+```dockerfile
+# Dockerfile
+
+FROM debian:bullseye as builder
+
+ARG NODE_VERSION=19.4.0
+ARG YARN_VERSION=3.4.1
+
+RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
+RUN curl https://get.volta.sh | bash
+ENV VOLTA_HOME /root/.volta
+ENV PATH /root/.volta/bin:$PATH
+RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION}
+
+RUN mkdir /app
+WORKDIR /app
+COPY . .
+RUN yarn
+
+FROM debian:bullseye
+LABEL fly_launch_runtime="nodejs"
+
+COPY --from=builder /root/.volta /root/.volta
+COPY --from=builder /app /app
+
+WORKDIR /app
+ENV NODE_ENV production
+ENV PATH /root/.volta/bin:$PATH
+
+ENTRYPOINT [ "node", "src/index.mjs" ]
 ```

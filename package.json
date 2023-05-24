@@ -1,6 +1,6 @@
 {
   "name": "langchain-node-edgio",
-  "description": "Template for Deploying a LangChain App to Railway, Fly, and Edgio with Node and Docker",
+  "description": "Template for Deploying a LangChain App to Edgio, Railway, and Fly with Node and Docker",
   "type": "module",
   "author": "Anthony Campolo",
   "license": "MIT",

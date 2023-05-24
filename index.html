@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>LangChain Node Template on Edgio</title>
+    <meta name="description" content="An example LangChain application deployed on Edgio with Node">
     <script>
       window.onload = function() {
         document.getElementById('chatForm').onsubmit = function(event) {
@@ -8,10 +9,8 @@
           const input = document.getElementById('chatInput').value
           fetch('/chat', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ input }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ input })
           })
             .then(response => response.json())
             .then(data => {
